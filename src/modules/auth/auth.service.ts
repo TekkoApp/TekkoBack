@@ -31,11 +31,18 @@ export class AuthService {
   }
 
   async login(user: any) {
-    console.log("esto valen en ese momento",process.env.JWT_SECRET)
     const payload = { email: user.email, sub: user.id, role: user.role };
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async loginWithEmail(email: string, password: string) {
+    const user = await this.validateUser(email, password);
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    return this.login(user);5
   }
 
   async googleLogin(token) {

@@ -10,7 +10,7 @@ const ormPostgresConfig = (): DataSourceOptions => {
     logging: true,
     entities: ['src/modules/**/*.entity{.ts,.js}'],
     migrations: ['src/migrations/**/*{.ts,.js}'],
-  }
+    }
 }
 
 export default new DataSource(ormPostgresConfig())
