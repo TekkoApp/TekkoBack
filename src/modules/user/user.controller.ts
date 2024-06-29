@@ -11,6 +11,12 @@ export class UserController {
     return this.userService.create(user);
   }
 
+  
+  @Post('tekko')
+  async createNewTekko(@Body() user: Partial<User>) {
+    return this.userService.create(user,true);
+  }
+
   @Get()
   async findAll() {
     return this.userService.findAll();
