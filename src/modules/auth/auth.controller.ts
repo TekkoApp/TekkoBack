@@ -22,6 +22,13 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  @Post('regularLogin')
+  async regularLogin(@Body() body: { email: string; password: string }) {
+    const { email, password } = body;
+    return this.authService.loginWithEmail(email, password);
+  }
+
+
   @Post('google')
   async googleLogin(@Body() body:any) {
     return this.authService.googleLogin(body.token);
@@ -36,7 +43,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('/profile')
   async getProfile (): Promise<User> {
-    const user = await this.authService.getProfile(this.request['user']['id']);
+    const user = await this.authService.getProfile(this.request['user']['userId']);
     return user;
    
   }

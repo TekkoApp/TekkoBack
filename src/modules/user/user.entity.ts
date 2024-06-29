@@ -1,21 +1,21 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm';
 import { UserRole } from './enumerations/user.enum';
+import BaseEntity from '../base/base.entity';
+import { Location } from '../location/location.entity';
 
-@Entity()
-export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+@Entity('user')
+export class User extends BaseEntity{
 
-  @Column()
+  @Column({name:'email', nullable: true })
   email: string;
 
-  @Column({ nullable: true })
+  @Column({name:'password', nullable: true })
   password: string;
 
-  @Column()
+  @Column({name:'first_name',nullable:true})
   firstName: string;
 
-  @Column()
+  @Column({name:'last_name',nullable:true})
   lastName: string;
 
   @Column({
@@ -25,18 +25,7 @@ export class User {
   })
   role: UserRole;
 
-  @Column({ nullable: false })
-  createdBy: string
+  @Column({ default: true })
+  activated?: boolean;
 
-  @CreateDateColumn()
-  createdDate: Date
-
-  @Column({ nullable: true })
-  updatedBy: string
-
-  @UpdateDateColumn()
-  updatedDate: Date
-
-  @DeleteDateColumn()
-  deletedDate: Date
 }
