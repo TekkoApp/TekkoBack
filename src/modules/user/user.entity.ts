@@ -12,6 +12,9 @@ export class User extends BaseEntity{
   @Column({name:'password', nullable: true })
   password: string;
 
+  @Column({name:'imageUrl', nullable: true })
+  imageUrl: string;
+
   @Column({name:'first_name',nullable:true})
   firstName: string;
 

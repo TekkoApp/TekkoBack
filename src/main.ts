@@ -14,6 +14,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
+
   app.use(bodyParser.json({ limit: '150mb' }));
   app.use(bodyParser.urlencoded({ limit: '150mb', extended: true }));
 

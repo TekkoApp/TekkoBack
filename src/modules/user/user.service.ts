@@ -4,12 +4,16 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from './enumerations/user.enum';
+import AWSResourceService, {  DataToSaveAWS } from '../aws/awsResourse.service';
+import UserDTO from './dto/user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    // private readonly emailSenderService: EmailSenderService,
+    private readonly aWSResourceService: AWSResourceService,
   ) {}
 
   async create(user: Partial<User>,isSupplier?:boolean): Promise<User> {
@@ -66,4 +70,35 @@ export class UserService {
   async delete(id: string): Promise<void> {
     await this.userRepository.delete(id);
   }
+
+
+  async getImageUrlFromNewImage(entity): Promise<string> {
+
+    const dataToSave: DataToSaveAWS = {
+        attach: entity.attachImage,
+        idUser: entity.id,
+        keyBucket: 'userProfileImages',
+    };
+
+
+    try {
+        const attachImagesProfileUrl = await this.aWSResourceService.awsSaveProfileImage(dataToSave as DataToSaveAWS);
+        return attachImagesProfileUrl
+  
+    } catch (error) {
+        throw new Error(error);
+    }
+
+}
+
+async updateUserById(id: string, userToUpdate: User): Promise<User> {
+  try {
+      userToUpdate.lastModifiedDate = new Date();
+      const userUpdated = await this.userRepository.save({ id, ...userToUpdate as unknown as UserDTO })
+      return userUpdated;
+  } catch (error) {
+      throw new Error(error)
+  }
+}
+
 }

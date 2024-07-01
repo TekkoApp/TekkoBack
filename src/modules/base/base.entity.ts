@@ -17,5 +17,5 @@ export default abstract class BaseEntity {
     lastModifiedDate: Date;
 
     @DeleteDateColumn({ type: 'date', name: 'delete_date', nullable: true })
-    deleteDate: Date;
+    deleteDate?: Date;
 }
