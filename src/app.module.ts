@@ -9,6 +9,7 @@ import { LocationModule } from './modules/location/location.module';
 import { SupplierModule } from './modules/supplier/supplier.module';
 import { ServiceModule } from './modules/service/service.module';
 import { AssistantModule } from './modules/assistant/assistant.module';
+import AWSResourceModule from './modules/aws/awsResourse.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { AssistantModule } from './modules/assistant/assistant.module';
     LocationModule,
     SupplierModule,
     AssistantModule,
-    ServiceModule
+    ServiceModule,
+    AWSResourceModule
   ]
 })
 export class AppModule {}

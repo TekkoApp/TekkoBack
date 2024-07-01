@@ -1,10 +1,24 @@
-import { Controller, Post, Body, Get, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param,  Delete, Put, Inject } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
+import UpdateUserDTO from './dto/updateUser.dto';
+import { Request } from 'express';
+import UserDTO from './dto/user.dto';
+import HttpPutException from '../base/exceptions/httpPut.exception';
+import { REQUEST } from '@nestjs/core';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+      private readonly userService: UserService,
+      @Inject(REQUEST)
+      private readonly request: Request
+    ) {}
+
+  protected getUserFromRequest() {
+    const user = this.request.user as UserDTO;
+    return user;
+}
 
   @Post()
   async create(@Body() user: Partial<User>) {
@@ -17,6 +31,24 @@ export class UserController {
     return this.userService.create(user,true);
   }
 
+    
+  @Put('/:id')
+  async update(
+      @Param('id') id: string,
+      @Body() entity: UpdateUserDTO,
+  ): Promise<any> {
+      try {
+          entity.id = this.getUserFromRequest().id;
+          if (entity.attachImage) {
+              const imageUrl = await this.userService.getImageUrlFromNewImage(entity)
+              entity.imageUrl = imageUrl;
+          }
+          return await this.userService.updateUserById(id, entity as UserDTO);
+      } catch (err) {
+          throw new HttpPutException(err).toHttpResponse();
+      }
+  }
+
   @Get()
   async findAll() {
     return this.userService.findAll();
@@ -27,10 +59,7 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() user: Partial<User>) {
-    return this.userService.update(id, user);
-  }
+
 
   @Delete(':id')
   async delete(@Param('id') id: string) {
