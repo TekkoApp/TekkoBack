@@ -1,6 +1,8 @@
 import { IsBoolean, IsEmail, IsString } from "class-validator";
-import BaseDTO from "src/modules/base/dto/base.dto";
+import BaseDTO from "./../../base/dto/base.dto";
 import { UserRole } from "../enumerations/user.enum";
+import { ClientDTO } from "./../../client/dto/client.dto";
+import { SupplierDTO } from "./../../supplier/dto/supplier.dto";
 
 
 export default class UserDTO extends BaseDTO  {
@@ -29,6 +31,10 @@ export default class UserDTO extends BaseDTO  {
     @IsString()
     imageUrl: string;
 
-    role:UserRole
+    role:UserRole;
+
+    client: ClientDTO;
+
+    supplier:SupplierDTO
 
 }

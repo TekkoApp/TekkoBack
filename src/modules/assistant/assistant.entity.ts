@@ -1,5 +1,9 @@
-import { BaseEntity, Column } from "typeorm";
+import {  Column, Entity, ManyToOne } from "typeorm";
+import BaseEntity from "../base/base.entity";
+import { Supplier } from "../supplier/supplier.entity";
 
+
+@Entity('assistant')
 export class Assistant extends BaseEntity{
     
     @Column({ name: 'photo_url', nullable: true })
@@ -11,4 +15,6 @@ export class Assistant extends BaseEntity{
     @Column({ name: 'background_url', nullable: true })
     backgroundUrl: string;
 
+    @ManyToOne(type => Supplier, other => other.assistants)
+    supplier: Supplier;
 }

@@ -6,6 +6,7 @@ import { OAuth2Client } from 'google-auth-library';
 import axios from 'axios';
 import { UserRole } from '../user/enumerations/user.enum';
 import { ConfigService } from '@nestjs/config';
+import UserDTO from '../user/dto/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -64,6 +65,15 @@ export class AuthService {
         return this.login(user); 
       } catch (error) {
         if (error instanceof NotFoundException) {
+          const newUserDto = new UserDTO();
+          newUserDto.email = payload.email;
+          newUserDto.createdBy = 'system';
+          newUserDto.createdDate = new Date();
+          newUserDto.firstName = payload.given_name || '';
+          newUserDto.lastName = payload.family_name || '';
+          newUserDto.password = '';
+          newUserDto.role = UserRole.CLIENT;
+
           const newUser = await this.userService.createSocialUser({
             email: payload.email,
             createdBy:'system',
@@ -85,25 +95,25 @@ export class AuthService {
   }
 
 
-  async facebookLogin(accessToken: string, userID: string) {
-    const url = `https://graph.facebook.com/v11.0/${userID}?fields=id,name,email&access_token=${accessToken}`;
-    const response = await axios.get(url);
-    const data = response.data;
-    const user = await this.userService.findByEmail(data.email);
-    if (user) {
-      return this.login(user);
-    } else {
-      const [firstName, lastName] = data.name.split(' ');
-      const newUser = await this.userService.create({
-        email: data.email,
-        firstName,
-        lastName,
-        password: '', // Set an empty password as it's a social login
-        role: UserRole.CLIENT, // Default role
-      });
-      return this.login(newUser);
-    }
-  }
+  // async facebookLogin(accessToken: string, userID: string) {
+  //   const url = `https://graph.facebook.com/v11.0/${userID}?fields=id,name,email&access_token=${accessToken}`;
+  //   const response = await axios.get(url);
+  //   const data = response.data;
+  //   const user = await this.userService.findByEmail(data.email);
+  //   if (user) {
+  //     return this.login(user);
+  //   } else {
+  //     const [firstName, lastName] = data.name.split(' ');
+  //     const newUser = await this.userService.create({
+  //       email: data.email,
+  //       firstName,
+  //       lastName,
+  //       password: '', // Set an empty password as it's a social login
+  //       role: UserRole.CLIENT, // Default role
+  //     });
+  //     return this.login(newUser);
+  //   }
+  // }
 
   private getJwtSecret(): string {
     return this.configService.get<string>('JWT_SECRET'); // Accede a JWT_SECRET desde ConfigService

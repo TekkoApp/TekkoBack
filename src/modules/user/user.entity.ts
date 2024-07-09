@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm';
+import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
 import { UserRole } from './enumerations/user.enum';
 import BaseEntity from '../base/base.entity';
-import { Location } from '../location/location.entity';
+import { Client } from '../client/client.entity';
+import { Supplier } from '../supplier/supplier.entity';
 
 @Entity('user')
 export class User extends BaseEntity{
@@ -30,5 +31,13 @@ export class User extends BaseEntity{
 
   @Column({ default: true })
   activated?: boolean;
+
+  @OneToOne(type => Client,{ cascade: ['insert', 'update'] })
+  @JoinColumn()
+  client: Client;
+
+  @OneToOne(() => Supplier, { cascade: ['insert', 'update'], nullable: true })
+  @JoinColumn()
+  supplier: Supplier;
 
 }

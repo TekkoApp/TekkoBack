@@ -4,8 +4,13 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from './enumerations/user.enum';
-import AWSResourceService, {  DataToSaveAWS } from '../aws/awsResourse.service';
+import AWSResourceService, { DataToSaveAWS } from '../aws/awsResourse.service';
 import UserDTO from './dto/user.dto';
+import CreateUserDTO from './dto/create-user.dto';
+import { Supplier } from '../supplier/supplier.entity';
+import { Service } from '../service/service.entity';
+import { Client } from '../client/client.entity';
+import { ClientDTO } from '../client/dto/client.dto';
 
 @Injectable()
 export class UserService {
@@ -14,32 +19,32 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     // private readonly emailSenderService: EmailSenderService,
     private readonly aWSResourceService: AWSResourceService,
-  ) {}
+  ) { }
 
-  async create(user: Partial<User>,isSupplier?:boolean): Promise<User> {
-    if (!user.password) {
+  async create(userDto: CreateUserDTO): Promise<User> {
+    if (!userDto.password) {
       throw new BadRequestException('Password is required');
     }
-
-    // Check if the email already exists
-    const existingUser = await this.userRepository.findOne({ where: { email: user.email } });
+  
+    const existingUser = await this.userRepository.findOne({ where: { email: userDto.email } });
     if (existingUser) {
       throw new ConflictException('A user with this email already exists');
     }
 
-    if(isSupplier){
-      user.role = UserRole.PROVIDER
-    }
-
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-    const newUser = this.userRepository.create({ ...user, password: hashedPassword });
-    newUser.createdBy = newUser.firstName;
+    const newUser = new User();
+    Object.assign(newUser,userDto);
+    newUser.createdBy = userDto.firstName;
     newUser.createdDate = new Date();
+    newUser.activated = true ;
+    newUser.password = await bcrypt.hash(userDto.password,10);
     return this.userRepository.save(newUser);
   }
 
+
   async createSocialUser(user: Partial<User>): Promise<User> {
     const newUser = this.userRepository.create(user);
+    const newClient = new ClientDTO();
+    newUser.client = newClient;
     return this.userRepository.save(newUser);
   }
 
@@ -75,30 +80,30 @@ export class UserService {
   async getImageUrlFromNewImage(entity): Promise<string> {
 
     const dataToSave: DataToSaveAWS = {
-        attach: entity.attachImage,
-        idUser: entity.id,
-        keyBucket: 'userProfileImages',
+      attach: entity.attachImage,
+      idUser: entity.id,
+      keyBucket: 'userProfileImages',
     };
 
 
     try {
-        const attachImagesProfileUrl = await this.aWSResourceService.awsSaveProfileImage(dataToSave as DataToSaveAWS);
-        return attachImagesProfileUrl
-  
+      const attachImagesProfileUrl = await this.aWSResourceService.awsSaveProfileImage(dataToSave as DataToSaveAWS);
+      return attachImagesProfileUrl
+
     } catch (error) {
-        throw new Error(error);
+      throw new Error(error);
     }
 
-}
+  }
 
-async updateUserById(id: string, userToUpdate: User): Promise<User> {
-  try {
+  async updateUserById(id: string, userToUpdate: User): Promise<User> {
+    try {
       userToUpdate.lastModifiedDate = new Date();
       const userUpdated = await this.userRepository.save({ id, ...userToUpdate as unknown as UserDTO })
       return userUpdated;
-  } catch (error) {
+    } catch (error) {
       throw new Error(error)
+    }
   }
-}
 
 }

@@ -34,11 +34,11 @@ export class AuthController {
     return this.authService.googleLogin(body.token);
   }
 
-  @Post('facebook')
-  async facebookLogin(@Body() body:FacebookLoginDto) {
-    const { accessToken, userID } = body;
-    return this.authService.facebookLogin(accessToken, userID);
-  }
+  // @Post('facebook')
+  // async facebookLogin(@Body() body:FacebookLoginDto) {
+  //   const { accessToken, userID } = body;
+  //   return this.authService.facebookLogin(accessToken, userID);
+  // }
 
   @UseGuards(JwtAuthGuard)
   @Get('/profile')
