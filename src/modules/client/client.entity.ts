@@ -7,17 +7,16 @@ import BaseEntity from '../base/base.entity';
 
 @Entity('client')
 export class Client extends BaseEntity {
-    @OneToOne(() => User)
-    @JoinColumn()
-    user: User;
-
+    
     @Column({ name: 'photo_url', nullable: true })
     photoUrl: string;
 
     @OneToMany(type => Location, other => other.client, { cascade: ['insert', 'update'] })
+    @JoinColumn()
     address: Location[];
 
     @OneToMany(type => Delivery, other => other.client, { cascade: ['insert', 'update'] })
+    @JoinColumn()
     deliveries: Delivery[];
 
 

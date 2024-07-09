@@ -1,11 +1,9 @@
-import { Controller, Post, Body, Get, Param,  Delete, Put, Inject } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param,  Delete,  Inject } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from './user.entity';
-import UpdateUserDTO from './dto/updateUser.dto';
 import { Request } from 'express';
 import UserDTO from './dto/user.dto';
-import HttpPutException from '../base/exceptions/httpPut.exception';
 import { REQUEST } from '@nestjs/core';
+import CreateUserDTO from './dto/create-user.dto';
 
 @Controller('users')
 export class UserController {
@@ -20,34 +18,30 @@ export class UserController {
     return user;
 }
 
-  @Post()
-  async create(@Body() user: Partial<User>) {
+
+  @Post('/')
+  async createNewUser(@Body() user: CreateUserDTO) {
+    const algo = 0;
     return this.userService.create(user);
   }
 
-  
-  @Post('tekko')
-  async createNewTekko(@Body() user: Partial<User>) {
-    return this.userService.create(user,true);
-  }
-
     
-  @Put('/:id')
-  async update(
-      @Param('id') id: string,
-      @Body() entity: UpdateUserDTO,
-  ): Promise<any> {
-      try {
-          entity.id = this.getUserFromRequest().id;
-          if (entity.attachImage) {
-              const imageUrl = await this.userService.getImageUrlFromNewImage(entity)
-              entity.imageUrl = imageUrl;
-          }
-          return await this.userService.updateUserById(id, entity as UserDTO);
-      } catch (err) {
-          throw new HttpPutException(err).toHttpResponse();
-      }
-  }
+  // @Put('/:id')
+  // async update(
+  //     @Param('id') id: string,
+  //     @Body() entity: UpdateUserDTO,
+  // ): Promise<any> {
+  //     try {
+  //         entity.id = this.getUserFromRequest().id;
+  //         if (entity.attachImage) {
+  //             const imageUrl = await this.userService.getImageUrlFromNewImage(entity)
+  //             entity.imageUrl = imageUrl;
+  //         }
+  //         return await this.userService.updateUserById(id, entity as UserDTO);
+  //     } catch (err) {
+  //         throw new HttpPutException(err).toHttpResponse();
+  //     }
+  // }
 
   @Get()
   async findAll() {

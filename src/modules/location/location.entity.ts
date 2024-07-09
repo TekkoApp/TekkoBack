@@ -1,32 +1,26 @@
 import { Column, Entity, ManyToOne } from "typeorm";
 import BaseEntity from "../base/base.entity";
-import { User } from "../user/user.entity";
 import { Client } from "../client/client.entity";
+import { Supplier } from "../supplier/supplier.entity";
 
 @Entity('location')
 export class Location extends BaseEntity {
-    @Column({ name: 'name',nullable:true })
+    @Column({ name: 'name',nullable:false })
     name: string;
 
-    @Column({ name: 'phone',nullable:true })
-    phone: string;
-
-    @Column({ name: 'email',nullable:true })
-    email: string;
-
-    @Column({ name: 'street',nullable:true })
+    @Column({ name: 'street',nullable:false })
     street: string;
 
     @Column({ name: 'zip_code',nullable:true })
     zipCode: string;
 
-    @Column({ name: 'state',nullable:true })
+    @Column({ name: 'state',nullable:false })
     state: string;
 
-    @Column({ name: 'city',nullable:true })
+    @Column({ name: 'city',nullable:false })
     city: string;
 
-    @Column({ name: 'number',nullable:true })
+    @Column({ name: 'number',nullable:false })
     number: string;
 
     @Column({ name: 'apartment',nullable:true})
@@ -46,5 +40,8 @@ export class Location extends BaseEntity {
 
     @ManyToOne(type => Client, other => other.address)
     client: Client;
+
+    @ManyToOne(type => Supplier, other => other.address)
+    supplier: Supplier;
 
 }

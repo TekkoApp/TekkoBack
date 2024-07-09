@@ -1,7 +1,9 @@
 import { IsString, IsEmail, IsOptional, MinLength, MaxLength } from 'class-validator';
 import BaseDTO from '../../base/dto/base.dto';
-import CreateAttachDTO from 'src/modules/attach/dto/createAttach.dto';
+import CreateAttachDTO from './../../attach/dto/createAttach.dto';
 import { UserRole } from '../enumerations/user.enum';
+import { ClientDTO } from './../../client/dto/client.dto';
+import { CreateSupplierDTO } from './../../supplier/dto/create-supplier.dto';
 
 export default class UpdateUserDTO extends BaseDTO {
 
@@ -33,4 +35,8 @@ export default class UpdateUserDTO extends BaseDTO {
     @IsOptional()
     @IsEmail()
     email?: string;
+
+    client?:ClientDTO
+
+    supplier?:CreateSupplierDTO
 }
