@@ -3,14 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
-import { UserRole } from './enumerations/user.enum';
 import AWSResourceService, { DataToSaveAWS } from '../aws/awsResourse.service';
 import UserDTO from './dto/user.dto';
 import CreateUserDTO from './dto/create-user.dto';
-import { Supplier } from '../supplier/supplier.entity';
-import { Service } from '../service/service.entity';
-import { Client } from '../client/client.entity';
 import { ClientDTO } from '../client/dto/client.dto';
+import UpdateUserDTO from './dto/updateUser.dto';
 
 @Injectable()
 export class UserService {
@@ -35,9 +32,30 @@ export class UserService {
     Object.assign(newUser,userDto);
     newUser.createdBy = userDto.firstName;
     newUser.createdDate = new Date();
-    newUser.activated = true ;
+    newUser.activated = true ;    
     newUser.password = await bcrypt.hash(userDto.password,10);
-    return this.userRepository.save(newUser);
+
+  
+
+    const userSaved =  await this.userRepository.save(newUser);
+
+    if(userDto.supplier?.services?.some((eachService=> eachService.attachImages))){
+      userDto.supplier?.services?.forEach(async element => {
+        if(element.attachImages){
+          const newDataToSave :DataToSaveAWS ={
+            attach : element.attachImages,
+            idUser : userSaved.supplier.id,
+            keyBucket : 'licenceUrl'
+          }
+          const imagesSaved = await this.aWSResourceService.awsSaveLicenceUrl(newDataToSave);
+          
+        }
+       });
+    }
+
+
+
+    return userSaved;
   }
 
 
@@ -96,11 +114,24 @@ export class UserService {
 
   }
 
-  async updateUserById(id: string, userToUpdate: User): Promise<User> {
+  async updateUserById(id: string, userToUpdate: UpdateUserDTO): Promise<User> {
     try {
       userToUpdate.lastModifiedDate = new Date();
-      const userUpdated = await this.userRepository.save({ id, ...userToUpdate as unknown as UserDTO })
-      return userUpdated;
+      if (userToUpdate.newImageForProfile){
+        const dataForAws :DataToSaveAWS = {
+          attach : [userToUpdate.newImageForProfile],
+          idUser: id,
+          rol : userToUpdate.role,
+          keyBucket : 'profile'
+        }
+        const newImageUrl = await this.aWSResourceService.awsSaveProfileImage(dataForAws);
+        userToUpdate.imageUrl = newImageUrl;
+      }
+      const userDataToUpdate = new UserDTO();
+      Object.assign(userDataToUpdate,userToUpdate);
+       await this.userRepository.save({ id, ...userDataToUpdate});
+      const userAlreadyUpdated = await this.userRepository.findOne({where:{id}})
+      return userAlreadyUpdated;
     } catch (error) {
       throw new Error(error)
     }

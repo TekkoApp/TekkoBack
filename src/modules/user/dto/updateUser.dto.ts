@@ -1,15 +1,13 @@
-import { IsString, IsEmail, IsOptional, MinLength, MaxLength } from 'class-validator';
+import { IsString, IsEmail, IsOptional, MinLength, MaxLength, IsDate } from 'class-validator';
 import BaseDTO from '../../base/dto/base.dto';
 import CreateAttachDTO from './../../attach/dto/createAttach.dto';
 import { UserRole } from '../enumerations/user.enum';
-import { ClientDTO } from './../../client/dto/client.dto';
-import { CreateSupplierDTO } from './../../supplier/dto/create-supplier.dto';
 
-export default class UpdateUserDTO extends BaseDTO {
+export default class UpdateUserDTO  {
 
     @IsOptional()
     @IsString()
-    login: string;
+    login?: string;
 
     @IsOptional()
     firstName?: string;
@@ -24,10 +22,10 @@ export default class UpdateUserDTO extends BaseDTO {
     password?: string;
 
     @IsOptional()
-    attachImage: CreateAttachDTO;
+    attachImage?: CreateAttachDTO;
 
     @IsOptional()
-    imageUrl?: string;
+    newImageForProfile?: CreateAttachDTO;
 
     @IsOptional()
     role?: UserRole;
@@ -36,7 +34,12 @@ export default class UpdateUserDTO extends BaseDTO {
     @IsEmail()
     email?: string;
 
-    client?:ClientDTO
+    @IsString()
+    @IsOptional()
+    imageUrl?: string;
 
-    supplier?:CreateSupplierDTO
+    @IsDate()
+    @IsOptional() 
+    lastModifiedDate: Date;
+
 }

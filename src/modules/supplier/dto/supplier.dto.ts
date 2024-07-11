@@ -48,4 +48,14 @@ export class SupplierDTO extends BaseDTO {
     @IsOptional()
     estimatedFee: string;
 
+    @IsString()
+    @IsOptional()
+    frontId: string;
+
+    @IsString()
+    @IsOptional()
+    backId: string;
+
+
+
 }

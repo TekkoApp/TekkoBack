@@ -1,9 +1,11 @@
-import { Controller, Post, Body, Get, Param,  Delete,  Inject } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param,  Delete,  Inject, Put, ParseUUIDPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Request } from 'express';
 import UserDTO from './dto/user.dto';
 import { REQUEST } from '@nestjs/core';
 import CreateUserDTO from './dto/create-user.dto';
+import UpdateUserDTO from './dto/updateUser.dto';
+import HttpPutException from '../base/exceptions/httpPut.exception';
 
 @Controller('users')
 export class UserController {
@@ -26,22 +28,20 @@ export class UserController {
   }
 
     
-  // @Put('/:id')
-  // async update(
-  //     @Param('id') id: string,
-  //     @Body() entity: UpdateUserDTO,
-  // ): Promise<any> {
-  //     try {
-  //         entity.id = this.getUserFromRequest().id;
-  //         if (entity.attachImage) {
-  //             const imageUrl = await this.userService.getImageUrlFromNewImage(entity)
-  //             entity.imageUrl = imageUrl;
-  //         }
-  //         return await this.userService.updateUserById(id, entity as UserDTO);
-  //     } catch (err) {
-  //         throw new HttpPutException(err).toHttpResponse();
-  //     }
-  // }
+  @Put('/:id')
+  async update(
+      @Param('id',ParseUUIDPipe) id: string,
+      @Body() entity: UpdateUserDTO,
+  ): Promise<any> {
+      try {
+          //  if (!id){
+          //    entity.id = this.getUserFromRequest().id;
+          //  }
+          return await this.userService.updateUserById(id, entity);
+      } catch (err) {
+          throw new HttpPutException(err).toHttpResponse();
+      }
+  }
 
   @Get()
   async findAll() {
