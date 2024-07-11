@@ -50,4 +50,10 @@ export class Supplier extends BaseEntity {
     @Column({ name: 'estimated_fee', nullable: true })
     estimatedFee: string;
 
+    @Column({ name: 'back_id', nullable: true })
+    backId: string;
+
+    @Column({ name: 'front_id', nullable: true })
+    frontId: string;
+
 }
