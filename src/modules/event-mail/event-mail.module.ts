@@ -20,15 +20,8 @@ export class EventMailModule {
   }
 
   @OnEvent('user.created')
-  handleUserCreatedEvent(userData: InformationForNewUserMail) {
-    const informationToSend: InformationToSendForEmail = {
-      to: userData.toEmail,
-      subject: 'Tu usuario ha sido creado',
-      templateName: 'welcomeUser',
-      toName: userData.toName
-    };
-
-    this.mailerSendService.sendEmail(informationToSend);
+  handleUserCreatedEvent(userData: InformationToSendForEmail) {
+    this.mailerSendService.sendEmail(userData);
   }
 
  

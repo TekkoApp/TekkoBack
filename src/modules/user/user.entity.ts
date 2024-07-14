@@ -22,6 +22,9 @@ export class User extends BaseEntity{
   @Column({name:'last_name',nullable:true})
   lastName: string;
 
+  @Column({name:'verification_code',nullable:true})
+  verificationCode: number;
+
   @Column({
     type: 'enum',
     enum: UserRole,

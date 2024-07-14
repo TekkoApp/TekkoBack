@@ -56,11 +56,14 @@ export class UserService {
        });
     }
 
-    const informationToSendEmail : InformationForNewUserMail = {
+    const informationToSendEmail : InformationToSendForEmail = {
        subject : 'Felicitaciones Usuario Creado',
        templateName : 'welcomeUser',
        toName: userDto.firstName,
-      toEmail :userDto.email
+       context:{
+        name:userDto.firstName
+       },
+       to:userDto.email
     }
 
   
