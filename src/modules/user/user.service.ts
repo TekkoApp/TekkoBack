@@ -8,13 +8,16 @@ import UserDTO from './dto/user.dto';
 import CreateUserDTO from './dto/create-user.dto';
 import { ClientDTO } from '../client/dto/client.dto';
 import UpdateUserDTO from './dto/updateUser.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { InformationToSendForEmail } from '../mailerSend/mailerSend.service';
+import { InformationForNewUserMail } from '../event-mail/event-mail.module';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    // private readonly emailSenderService: EmailSenderService,
+    private readonly eventEmitter: EventEmitter2,
     private readonly aWSResourceService: AWSResourceService,
   ) { }
 
@@ -53,7 +56,15 @@ export class UserService {
        });
     }
 
+    const informationToSendEmail : InformationForNewUserMail = {
+       subject : 'Felicitaciones Usuario Creado',
+       templateName : 'welcomeUser',
+       toName: userDto.firstName,
+      toEmail :userDto.email
+    }
 
+  
+    this.eventEmitter.emit('user.created', informationToSendEmail);
 
     return userSaved;
   }
