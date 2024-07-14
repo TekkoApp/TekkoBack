@@ -10,9 +10,13 @@ import { SupplierModule } from './modules/supplier/supplier.module';
 import { ServiceModule } from './modules/service/service.module';
 import { AssistantModule } from './modules/assistant/assistant.module';
 import AWSResourceModule from './modules/aws/awsResourse.module';
+import { MailerSendModule } from './modules/mailerSend/mailerSend.module';
+import { EventMailModule } from './modules/event-mail/event-mail.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       useFactory: getDatabaseProvider,
@@ -23,7 +27,9 @@ import AWSResourceModule from './modules/aws/awsResourse.module';
     SupplierModule,
     AssistantModule,
     ServiceModule,
-    AWSResourceModule
+    AWSResourceModule,
+    MailerSendModule,
+    EventMailModule
   ]
 })
 export class AppModule {}
