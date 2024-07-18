@@ -4,7 +4,8 @@ import { UpdateLocationDto } from './dto/update-location.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Location } from './location.entity';
 import { Repository } from 'typeorm';
-import { ClientService } from '../client/client.service';
+import axios from 'axios';
+import AutocompleteFailure from './exceptions/autocompleteFailure.exception';
 
 @Injectable()
 export class LocationService {
@@ -30,4 +31,24 @@ export class LocationService {
   remove(id: number) {
     return `This action removes a #${id} location`;
   }
+
+  async getPlacesAutocompleteResults (body: any): Promise<string[]> {
+    const google_autocomplete_url = process.env.GOOGLE_AUTOCOMPLETE_URL;
+    const locations: string[] = [];
+    const googleKey = process.env.GOOGLE_AUTOCOMPLETE_KEY ;
+    const params = {
+        input: body.entity,
+        key: googleKey,
+    };
+    const response = await axios.get(google_autocomplete_url, { params });
+    if (response.status !== 200) {
+        throw new AutocompleteFailure();
+    }
+    response.data.predictions.map(el => {
+        const address = el.description;
+        locations.push(address);
+    });
+    return locations;
+}
+
 }
