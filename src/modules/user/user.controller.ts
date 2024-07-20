@@ -23,7 +23,6 @@ export class UserController {
 
   @Post('/')
   async createNewUser(@Body() user: CreateUserDTO) {
-    const algo = 0;
     return this.userService.create(user);
   }
 

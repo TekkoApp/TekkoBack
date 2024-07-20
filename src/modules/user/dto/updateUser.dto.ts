@@ -1,7 +1,9 @@
-import { IsString, IsEmail, IsOptional, MinLength, MaxLength, IsDate } from 'class-validator';
+import { IsString, IsEmail, IsOptional, MinLength, MaxLength, IsDate, IsBoolean } from 'class-validator';
 import BaseDTO from '../../base/dto/base.dto';
 import CreateAttachDTO from './../../attach/dto/createAttach.dto';
 import { UserRole } from '../enumerations/user.enum';
+import { ClientDTO } from './../../client/dto/client.dto';
+import { Transform, Type } from 'class-transformer';
 
 export default class UpdateUserDTO  {
 
@@ -40,6 +42,15 @@ export default class UpdateUserDTO  {
 
     @IsDate()
     @IsOptional() 
-    lastModifiedDate: Date;
+    @Type(() => Date)
+    @Transform(({ value }) => value ?? new Date(), { toClassOnly: true })
+    lastModifiedDate?: Date;
+
+    @IsOptional()
+    client?:ClientDTO
+
+    @IsOptional()
+    @IsBoolean()
+    activated?:boolean
 
 }

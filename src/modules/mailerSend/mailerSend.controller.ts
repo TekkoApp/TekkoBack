@@ -1,5 +1,6 @@
 import { Controller, Get, Param } from "@nestjs/common";
 import { MailerSendService } from "./mailerSend.service";
+import { User } from "../user/user.entity";
 
 @Controller('mailerSend')
 export class MailerSendController {
@@ -18,7 +19,7 @@ export class MailerSendController {
     async verifyCode(
         @Param('id') id: string,
         @Param('code') code: number
-    ):Promise<boolean> {
+    ):Promise<User> {
        return await this.mailerSendService.verifyCode(id, code);
     }
 

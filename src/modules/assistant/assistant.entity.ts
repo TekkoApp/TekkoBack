@@ -1,4 +1,4 @@
-import {  Column, Entity, ManyToOne } from "typeorm";
+import {  Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import BaseEntity from "../base/base.entity";
 import { Supplier } from "../supplier/supplier.entity";
 
@@ -16,5 +16,6 @@ export class Assistant extends BaseEntity{
     backgroundUrl: string;
 
     @ManyToOne(type => Supplier, other => other.assistants)
+    @JoinColumn()
     supplier: Supplier;
 }

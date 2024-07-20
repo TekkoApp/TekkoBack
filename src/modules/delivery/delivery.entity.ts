@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import BaseEntity from "../base/base.entity";
 import { DeliveryStatus } from "./enums/deliveryStatus.enum";
 import { Client } from "../client/client.entity";
@@ -30,8 +30,10 @@ export default class Delivery extends BaseEntity {
     attached: string[];
 
     @ManyToOne(type => Supplier, other => other.deliveries, { cascade: ['insert', 'update', 'remove'] })
+    @JoinColumn()
     supplier: Supplier;
 
     @ManyToOne(type => Service, other => other.deliveries, { cascade: ['insert', 'update'] })
+    @JoinColumn()
     service: Service;
 }

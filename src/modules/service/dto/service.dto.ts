@@ -9,7 +9,7 @@ export class ServiceDTO extends BaseDTO{
 
     @IsArray()
     @IsOptional()
-    attachImages: CreateAttachDTO[];
+    licenceUrl?: string[];
 
     @IsNumber()
     @IsOptional()

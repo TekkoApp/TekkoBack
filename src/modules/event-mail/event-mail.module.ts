@@ -24,5 +24,12 @@ export class EventMailModule {
     this.mailerSendService.sendEmail(userData);
   }
 
+  @OnEvent('send.verification')
+  sendverificationEmail(idUser: string) {
+    this.mailerSendService.sendVerificationMailCode(idUser);
+  }
+
+
+
  
 }

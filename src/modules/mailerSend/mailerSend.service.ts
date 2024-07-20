@@ -4,6 +4,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import * as handlebars from 'handlebars';
 import { UserService } from '../user/user.service';
+import { User } from '../user/user.entity';
 
 export interface InformationToSendForEmail {
     to:string,
@@ -106,15 +107,20 @@ export class MailerSendService {
     return Math.floor(1000+ Math.random()*9000);
   }
 
-  async verifyCode(id: string, code: number): Promise<boolean> {
+  async verifyCode(id: string, code: number) : Promise<User> {
     try {
       const userToVerify = await this.userService.findOne(id);
       if (!userToVerify) {
         throw new Error(`User with ID ${id} doesn't exist`);
       }
-      return userToVerify.verificationCode === +code;
+      if (userToVerify.verificationCode === +code) {
+        const userUpdated = await this.userService.updateUserById(id, { activated: true });
+        return userUpdated; 
+      } else {
+        throw new Error(`Verification code does not match`);
+      }
     } catch (error) {
-      throw new Error(`Error fetching user with ID ${id}: ${error.message}`);
+      throw new Error(`Error verifying user with ID ${id}: ${error.message}`);
     }
   }
   
