@@ -1,8 +1,8 @@
 import { IsArray, IsNotEmpty, IsNumberString, IsOptional, IsString } from "class-validator";
 import { LocationDTO } from "./../../location/dto/location.dto";
-import { Weekday } from "../enums/weekDay.enum";
-import { ServiceDTO } from "./../../service/dto/service.dto";
-import CreateAttachDTO from "src/modules/attach/dto/createAttach.dto";
+import CreateAttachDTO from "./../../attach/dto/createAttach.dto";
+import { CreateServiceDto } from "./../../service/dto/create-service.dto";
+import CreateTimeSheetDTO from "./../../timeSheet/dto/create-timeSheet.dto";
 
 export class CreateSupplierDTO {
 
@@ -18,29 +18,32 @@ export class CreateSupplierDTO {
     @IsOptional()
     backgroundUrl: CreateAttachDTO;
 
-    @IsArray()
-    @IsOptional()
-    workingDays: Weekday[];
-
     @IsString()
     @IsOptional()
     selfDescription: string;
 
     @IsArray()
-    services: ServiceDTO[];
+    services: CreateServiceDto[];
 
     @IsNumberString()
     @IsOptional()
     estimatedFee: string;
 
-    @IsString()
     @IsOptional()
     frontId: CreateAttachDTO;
 
-    @IsString()
     @IsOptional()
     backId: CreateAttachDTO;
 
+    @IsOptional()
+    @IsArray()
+    zonesIds?:string[]
+
+    @IsOptional()
+    @IsArray()
+    timeSheets:CreateTimeSheetDTO[]
+
+ 
 }
 
 

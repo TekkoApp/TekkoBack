@@ -1,14 +1,14 @@
-import UserDTO from "./../../user/dto/user.dto";
 import BaseDTO from "./../../base/dto/base.dto"
 import { IsArray, IsNotEmpty, IsNumberString, IsOptional, IsString } from "class-validator";
 import { LocationDTO } from "./../../location/dto/location.dto";
 import DeliveryDTO from "./../../delivery/dto/delivery.dto";
 import AssistantDTO from "./../../assistant/dto/assistant.dto";
 import { ServiceDTO } from "./../../service/dto/service.dto";
-import { Weekday } from "../enums/weekDay.enum";
+import Gender from "../enums/gender.enum";
+import { ZoneDTO } from "./../../zone/dto/zone.dto";
+import TimeSheetDTO from "./../../timeSheet/dto/timeSheet.dto";
 
 export class SupplierDTO extends BaseDTO {
-    user: UserDTO;
 
     @IsString()
     @IsOptional()
@@ -36,10 +36,6 @@ export class SupplierDTO extends BaseDTO {
     @IsArray()
     services: ServiceDTO[];
 
-    @IsArray()
-    @IsOptional()
-    workingDays: Weekday[];
-
     @IsString()
     @IsOptional()
     selfDescription: string;
@@ -56,6 +52,12 @@ export class SupplierDTO extends BaseDTO {
     @IsOptional()
     backId: string;
 
+    @IsNotEmpty()
+    gender:Gender
 
+    @IsNotEmpty()
+    zones: ZoneDTO[];
+
+    timeSheets:TimeSheetDTO[]
 
 }

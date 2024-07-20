@@ -13,6 +13,9 @@ import AWSResourceModule from './modules/aws/awsResourse.module';
 import { MailerSendModule } from './modules/mailerSend/mailerSend.module';
 import { EventMailModule } from './modules/event-mail/event-mail.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ClientModule } from './modules/client/client.module';
+import { ZoneModule } from './modules/zone/zone.module';
+import { TimeSheetModule } from './modules/timeSheet/timeSheet.module';
 
 @Module({
   imports: [
@@ -22,14 +25,17 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       useFactory: getDatabaseProvider,
     }),    UserModule,
     AuthModule,
+    ClientModule,
     DeliveryModule,
     LocationModule,
     SupplierModule,
     AssistantModule,
     ServiceModule,
     AWSResourceModule,
+    ZoneModule,
     MailerSendModule,
-    EventMailModule
+    EventMailModule,
+    TimeSheetModule
   ]
 })
 export class AppModule {}

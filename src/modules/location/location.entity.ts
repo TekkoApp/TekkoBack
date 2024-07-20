@@ -1,11 +1,11 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import BaseEntity from "../base/base.entity";
 import { Client } from "../client/client.entity";
 import { Supplier } from "../supplier/supplier.entity";
 
 @Entity('location')
 export class Location extends BaseEntity {
-    @Column({ name: 'name',nullable:false })
+    @Column({ name: 'name',nullable:false,default:'principal' })
     name: string;
 
     @Column({ name: 'street',nullable:false })
@@ -39,9 +39,11 @@ export class Location extends BaseEntity {
     country: string;
 
     @ManyToOne(type => Client, other => other.address)
+    @JoinColumn()
     client: Client;
 
     @ManyToOne(type => Supplier, other => other.address)
+    @JoinColumn()
     supplier: Supplier;
 
 }

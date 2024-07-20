@@ -6,7 +6,7 @@ import { LocationController } from './location.controller';
 import { ClientModule } from '../client/client.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Location]),ClientModule],
+  imports: [TypeOrmModule.forFeature([Location])],
   providers: [LocationService],
   controllers: [LocationController],
   exports: [LocationService],

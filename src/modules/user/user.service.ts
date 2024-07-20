@@ -9,11 +9,8 @@ import CreateUserDTO from './dto/create-user.dto';
 import { ClientDTO } from '../client/dto/client.dto';
 import UpdateUserDTO from './dto/updateUser.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { InformationToSendForEmail } from '../mailerSend/mailerSend.service';
-import { InformationForNewUserMail } from '../event-mail/event-mail.module';
-
 @Injectable()
-export class UserService {
+export class  UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -35,39 +32,16 @@ export class UserService {
     Object.assign(newUser,userDto);
     newUser.createdBy = userDto.firstName;
     newUser.createdDate = new Date();
-    newUser.activated = true ;    
+    newUser.activated = false ;    
     newUser.password = await bcrypt.hash(userDto.password,10);
 
   
 
     const userSaved =  await this.userRepository.save(newUser);
 
-    if(userDto.supplier?.services?.some((eachService=> eachService.attachImages))){
-      userDto.supplier?.services?.forEach(async element => {
-        if(element.attachImages){
-          const newDataToSave :DataToSaveAWS ={
-            attach : element.attachImages,
-            idUser : userSaved.supplier.id,
-            keyBucket : 'licenceUrl'
-          }
-          const imagesSaved = await this.aWSResourceService.awsSaveLicenceUrl(newDataToSave);
-          
-        }
-       });
-    }
-
-    const informationToSendEmail : InformationToSendForEmail = {
-       subject : 'Felicitaciones Usuario Creado',
-       templateName : 'welcomeUser',
-       toName: userDto.firstName,
-       context:{
-        name:userDto.firstName
-       },
-       to:userDto.email
-    }
-
+   
+    this.eventEmitter.emit('send.verification',userSaved.id)
   
-    this.eventEmitter.emit('user.created', informationToSendEmail);
 
     return userSaved;
   }

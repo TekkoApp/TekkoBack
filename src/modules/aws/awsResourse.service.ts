@@ -10,6 +10,8 @@ export interface DataToSaveAWS {
     rol?:UserRole;
 }
 
+
+
 export interface DataToDeleteAWS {
     urlToDelete: any[];
     idShopToDelete: string;
@@ -43,25 +45,13 @@ export default class AWSResourceService {
         }
     }
 
-    async awsSaveLicenceUrl(data: DataToSaveAWS): Promise<string[]> { 
-        const newUrls: string[] = [];
-        try {
-            data.attach.forEach(async elementToSave => {
-                const url = await this.awsSave({ ...elementToSave, idUser: data.idUser, keyBucket: data.keyBucket }); 
-                return url;
-            });
-        } catch (error) {
-            throw new Error(error);
-        }
-        return newUrls;
-    }
 
 
     async awsSave(data) {
         try {
             const buf = Buffer.from(data[0].file.replace(/^data:image\/\w+;base64,/, ''), 'base64');
             const uniqueId = uuidv4();
-            const ext = data[0].fileName.substring(data[0].fileName.lastIndexOf('.') + 1);
+            const ext = data[0]?.fileName.substring(data[0].fileName.lastIndexOf('.') + 1);
             let fileExtencion;
             switch (ext) {
                 case 'jpg':
@@ -84,8 +74,12 @@ export default class AWSResourceService {
                 ContentType: fileExtencion,
             };
 
-            const entityTag = await new AWS.S3({ apiVersion: '2010-12-01', region: 'sa-east-1' }).putObject(configData).promise();
-            return entityTag ? uniqueId as string : '';
+            try {
+                const entityTag = await new AWS.S3({ apiVersion: '2010-12-01', region: 'sa-east-1' }).putObject(configData).promise();
+                return entityTag ? uniqueId as string : '';
+            } catch (error) {
+                throw new Error(`Error saving in aws for ${configData}`)
+            }
         } catch (error) {
             throw new Error(error);
         }
