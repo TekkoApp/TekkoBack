@@ -1,17 +1,25 @@
-import { IsArray, IsNotEmpty, IsNumberString, IsOptional, IsString } from "class-validator";
+import { IsArray, IsDate, IsNotEmpty, IsNumberString, IsOptional, IsString } from "class-validator";
 import { LocationDTO } from "./../../location/dto/location.dto";
 import CreateAttachDTO from "./../../attach/dto/createAttach.dto";
 import { CreateServiceDto } from "./../../service/dto/create-service.dto";
 import CreateTimeSheetDTO from "./../../timeSheet/dto/create-timeSheet.dto";
+import Gender from "../enums/gender.enum";
 
 export class CreateSupplierDTO {
 
     @IsNumberString()
-    @IsNotEmpty()
+    @IsOptional()
     phone: string;
 
+    @IsOptional()
+    gender: Gender;
+
+    @IsDate()
+    @IsOptional()
+    birthDate: Date;
+
     @IsArray()
-    @IsNotEmpty()
+    @IsOptional()
     address: LocationDTO[];
 
     @IsString()
