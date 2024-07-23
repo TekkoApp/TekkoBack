@@ -48,6 +48,9 @@ export class Supplier extends BaseEntity {
     @Column({ name: 'front_id', nullable: true })
     frontId: string;
 
+    @Column({ name: 'birth_date', nullable: true })
+    birthDate: Date;
+
     @ManyToMany(type => Zone, other => other.suppliers, { cascade: ['insert', 'update'] })
     @JoinTable({
         name: 'supplier_zones',

@@ -1,5 +1,5 @@
 import BaseDTO from "./../../base/dto/base.dto"
-import { IsArray, IsNotEmpty, IsNumberString, IsOptional, IsString } from "class-validator";
+import { IsArray, IsDate, IsNotEmpty, IsNumberString, IsOptional, IsString } from "class-validator";
 import { LocationDTO } from "./../../location/dto/location.dto";
 import DeliveryDTO from "./../../delivery/dto/delivery.dto";
 import AssistantDTO from "./../../assistant/dto/assistant.dto";
@@ -54,6 +54,10 @@ export class SupplierDTO extends BaseDTO {
 
     @IsNotEmpty()
     gender:Gender
+
+    @IsOptional()
+    @IsDate()
+    birthDate:Date
 
     @IsNotEmpty()
     zones: ZoneDTO[];
