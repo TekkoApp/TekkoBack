@@ -55,17 +55,7 @@ export class SupplierService {
       }
 
 
-      //Actualizo las zonas del proveedor
-      if (updateSupplierDto.zonesIds) {
-        updateSupplierDto.zonesIds.forEach(async eachZoneId => {
-          const zone = await this.zoneService.findOne(eachZoneId);
-          if (supplierToUpdate.zones) {
-            supplierToUpdate.zones.push(zone);
-          } else {
-            supplierToUpdate.zones = [zone]
-          }
-        });
-      }
+      
 
 
       //Guardo las imagenes de los documentos en AWS y actualizo la entidad

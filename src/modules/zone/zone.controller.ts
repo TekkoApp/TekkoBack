@@ -14,6 +14,18 @@ export class ZoneController {
     return this.zoneService.create(createSupplierDTO);
   }
 
+  
+  @ApiOperation({ description: 'Create new zones' })
+  @Post('/multiple')
+  async createMany(@Body() createZoneDTOs: CreateZoneDTO[]): Promise<Zone[]> {
+    const creationPromises = createZoneDTOs.map(createZoneDTO =>
+      this.zoneService.create(createZoneDTO)
+    );
+  
+    const newZones = await Promise.all(creationPromises);
+    return newZones;
+  }
+
   @ApiOperation({ description: 'Get all zones' })
   @Get()
   getAll():Promise<Zone[]> {
