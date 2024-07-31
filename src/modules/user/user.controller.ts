@@ -22,7 +22,7 @@ export class UserController {
 
 
   @Post('/')
-  async createNewUser(@Body() user: CreateUserDTO) {
+  async createNewUser(@Body() user: any) {
     return this.userService.create(user);
   }
 

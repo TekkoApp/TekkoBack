@@ -9,8 +9,9 @@ import CreateUserDTO from './dto/create-user.dto';
 import { ClientDTO } from '../client/dto/client.dto';
 import UpdateUserDTO from './dto/updateUser.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import Gender from '../supplier/enums/gender.enum';
 @Injectable()
-export class  UserService {
+export class  UserService   {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -34,6 +35,14 @@ export class  UserService {
     newUser.createdDate = new Date();
     newUser.activated = false ;    
     newUser.password = await bcrypt.hash(userDto.password,10);
+    
+
+    if(newUser.supplier.gender){
+      newUser.supplier.gender = newUser.supplier.gender === 'm' as string ? Gender.MALE : Gender.FEMALE
+    }
+    
+    newUser.verificationCode = this.generateRandomCode();;
+
 
   
 
@@ -61,6 +70,12 @@ export class  UserService {
     }
     return user;
   }
+
+  generateRandomCode():number{
+    return Math.floor(1000+ Math.random()*9000);
+  }
+
+ 
 
   async findOne(id: string): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id: id } });
@@ -118,7 +133,7 @@ export class  UserService {
       const userDataToUpdate = new UserDTO();
       Object.assign(userDataToUpdate,userToUpdate);
        await this.userRepository.save({ id, ...userDataToUpdate});
-      const userAlreadyUpdated = await this.userRepository.findOne({where:{id}})
+      const userAlreadyUpdated = await this.userRepository.findOne({where:{id},relations:['supplier','supplier.zones']})
       return userAlreadyUpdated;
     } catch (error) {
       throw new Error(error)

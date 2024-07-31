@@ -14,9 +14,9 @@ export class CreateSupplierDTO {
     @IsOptional()
     gender: Gender;
 
-    @IsDate()
+    @IsString()
     @IsOptional()
-    birthDate: Date;
+    birthDate: string;
 
     @IsArray()
     @IsOptional()

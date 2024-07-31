@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateZoneDTO } from './dto/zone.dto copy';
+import { CreateZoneDTO } from './dto/create-zone.dto copy';
 import { Repository } from 'typeorm';
 import { Zone } from './zone.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,6 +35,16 @@ export class ZoneService {
       return zone;
     } catch (error) {
       throw new Error(`Error finding the zone with id ${id} with ${error}`   )
+    }
+
+  }
+
+  async findAll(): Promise<Zone[]> {
+    try {
+      const zone = await this.zoneRepository.findAndCount();
+      return zone[0];
+    } catch (error) {
+      throw new Error(`Error finding the zones  with ${error}`   )
     }
 
   }
