@@ -82,7 +82,7 @@ export class MailerSendService {
     try {
       const userToVerify = await this.userService.findOne(userId);
       if(userToVerify){
-        const verificationCode = this.generateRandomCode();
+        const verificationCode = userToVerify.verificationCode;
         userToVerify.verificationCode = verificationCode;
         await this.userService.updateUserById(userId,userToVerify);
         const informationForEmail : InformationToSendForEmail = {
@@ -103,9 +103,7 @@ export class MailerSendService {
     }
   }
 
-  generateRandomCode():number{
-    return Math.floor(1000+ Math.random()*9000);
-  }
+
 
   async verifyCode(id: string, code: number) : Promise<User> {
     try {
