@@ -37,7 +37,7 @@ export class  UserService   {
     newUser.password = await bcrypt.hash(userDto.password,10);
     
 
-    if(newUser.supplier.gender){
+    if(newUser.supplier && newUser.supplier.gender){
       newUser.supplier.gender = newUser.supplier.gender === 'm' as string ? Gender.MALE : Gender.FEMALE
     }
     
